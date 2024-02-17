@@ -1,6 +1,10 @@
 package compiler
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/vclemenzi/markfire/utils"
+)
 
 func Generate(token Token, previousToken Token, openableTokens *OpenableTokens, i int) string {
 	str := ""
@@ -8,25 +12,25 @@ func Generate(token Token, previousToken Token, openableTokens *OpenableTokens, 
 	blockquote := openableTokens.Blockquote
 
 	if token.Kind == 1 {
-		str = fmt.Sprintf("<h%d>%s</h%d>", token.SubKind+1, token.Content, token.SubKind+1)
+		str = fmt.Sprintf("<h%d>%s</h%d>", token.SubKind+1, utils.TextFormat(token.Content), token.SubKind+1)
 	} else if token.Kind == 2 {
 		if token.SubKind == 0 && list.Index == i {
-			str = fmt.Sprintf("<ul><li>%s</li>", token.Content)
+			str = fmt.Sprintf("<ul><li>%s</li>", utils.TextFormat(token.Content))
 		} else if token.SubKind == 1 && list.Index == i {
-			str = fmt.Sprintf("<ol><li>%s</li>", token.Content)
+			str = fmt.Sprintf("<ol><li>%s</li>", utils.TextFormat(token.Content))
 		} else {
-			str = fmt.Sprintf("<li>%s</li>", token.Content)
+			str = fmt.Sprintf("<li>%s</li>", utils.TextFormat(token.Content))
 		}
 	} else if token.Kind == 3 {
 		if blockquote.Index == i {
-			str = fmt.Sprintf("<blockquote>%s", token.Content)
+			str = fmt.Sprintf("<blockquote>%s", utils.TextFormat(token.Content))
 		} else {
-			str = token.Content
+			str = utils.TextFormat(token.Content)
 		}
 
 		str += "<br>"
 	} else {
-		str = token.Content
+		str = utils.TextFormat(token.Content)
 	}
 
 	if !list.IsOpen && previousToken.Kind == 2 {
