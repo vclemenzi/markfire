@@ -30,17 +30,20 @@ func main() {
 	}
 
 	var html string
-	var list compiler.List
 	var previousToken compiler.Token
+	openableTokens := compiler.OpenableTokens{
+		List:       &compiler.List{},
+		Blockquote: &compiler.Blockquote{},
+	}
 
 	for i, line := range strings.Split(string(content), "\n") {
-		token := compiler.Tokenizer(line, &list, i)
+		token := compiler.Tokenizer(line, &openableTokens, i)
 
-		html += compiler.Generate(token, previousToken, &list, i)
+		html += compiler.Generate(token, previousToken, &openableTokens, i)
 		html += "\n"
 
-		if token.Kind == 2 && token.SubKind == list.Subkind {
-			list.Closure += 1
+		if token.Kind == 2 && token.SubKind == openableTokens.List.Subkind {
+			openableTokens.List.Closure += 1
 		}
 
 		previousToken = token

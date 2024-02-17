@@ -30,6 +30,11 @@ type Token struct {
 	Line    int
 }
 
+type OpenableTokens struct {
+	List       *List
+	Blockquote *Blockquote
+}
+
 type List struct {
 	IsOpen  bool
 	Index   int
@@ -37,8 +42,17 @@ type List struct {
 	Closure int
 }
 
-func Tokenizer(input string, list *List, i int) Token {
+type Blockquote struct {
+	IsOpen  bool
+	Index   int
+	Closure int
+}
+
+func Tokenizer(input string, openableTokens *OpenableTokens, i int) Token {
 	token := Token{Kind: 0, SubKind: -1, Content: input}
+
+	list := openableTokens.List
+	blockquote := openableTokens.Blockquote
 
 	if strings.HasPrefix(input, "#") {
 		level := utils.HeadingLevel(input)
@@ -61,6 +75,11 @@ func Tokenizer(input string, list *List, i int) Token {
 
 		token = Token{Kind: 2, SubKind: 1, Content: strings.TrimSpace(input[2:])}
 	} else if strings.HasPrefix(input, ">") {
+		if !blockquote.IsOpen {
+			blockquote.IsOpen = true
+			blockquote.Index = i
+		}
+
 		token = Token{Kind: 3, SubKind: -1, Content: strings.TrimSpace(input[1:])}
 	} else {
 		token = Token{Kind: 0, SubKind: -1, Content: input}
@@ -68,6 +87,10 @@ func Tokenizer(input string, list *List, i int) Token {
 
 	if list.IsOpen && (token.Kind != 2 || token.SubKind != list.Subkind) {
 		list.IsOpen = false
+	}
+
+	if blockquote.IsOpen && token.Kind != 3 {
+		blockquote.IsOpen = false
 	}
 
 	return token
