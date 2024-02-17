@@ -1,12 +1,13 @@
-package compiler
+package generator
 
 import (
 	"fmt"
 
+	"github.com/vclemenzi/markfire/tokenizer"
 	"github.com/vclemenzi/markfire/utils"
 )
 
-func Generate(token Token, previousToken Token, openableTokens *OpenableTokens, i int) string {
+func Html(token tokenizer.Token, previousToken tokenizer.Token, openableTokens *tokenizer.OpenableTokens, i int) string {
 	str := ""
 	list := openableTokens.List
 	blockquote := openableTokens.Blockquote

@@ -1,4 +1,4 @@
-package compiler
+package tokenizer
 
 import (
 	"regexp"
@@ -22,31 +22,6 @@ import (
 //  - Ordered: 1
 // Blockquote: 3
 //   No one
-
-type Token struct {
-	Kind    int
-	SubKind int
-	Content string
-	Line    int
-}
-
-type OpenableTokens struct {
-	List       *List
-	Blockquote *Blockquote
-}
-
-type List struct {
-	IsOpen  bool
-	Index   int
-	Subkind int
-	Closure int
-}
-
-type Blockquote struct {
-	IsOpen  bool
-	Index   int
-	Closure int
-}
 
 func Tokenizer(input string, openableTokens *OpenableTokens, i int) Token {
 	token := Token{Kind: 0, SubKind: -1, Content: input}

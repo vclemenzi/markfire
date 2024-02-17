@@ -6,7 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/vclemenzi/markfire/compiler"
+	"github.com/vclemenzi/markfire/generator"
+	"github.com/vclemenzi/markfire/tokenizer"
 )
 
 func main() {
@@ -30,16 +31,16 @@ func main() {
 	}
 
 	var html string
-	var previousToken compiler.Token
-	openableTokens := compiler.OpenableTokens{
-		List:       &compiler.List{},
-		Blockquote: &compiler.Blockquote{},
+	var previousToken tokenizer.Token
+	openableTokens := tokenizer.OpenableTokens{
+		List:       &tokenizer.List{},
+		Blockquote: &tokenizer.Blockquote{},
 	}
 
 	for i, line := range strings.Split(string(content), "\n") {
-		token := compiler.Tokenizer(line, &openableTokens, i)
+		token := tokenizer.Tokenizer(line, &openableTokens, i)
 
-		html += compiler.Generate(token, previousToken, &openableTokens, i)
+		html += generator.Html(token, previousToken, &openableTokens, i)
 		html += "\n"
 
 		if token.Kind == 2 && token.SubKind == openableTokens.List.Subkind {
