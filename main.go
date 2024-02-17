@@ -35,5 +35,7 @@ func main() {
 		tokens = append(tokens, compiler.Tokinizer(line))
 	}
 
-	fmt.Println(tokens)
+	for _, token := range tokens {
+		fmt.Println(token)
+	}
 }
