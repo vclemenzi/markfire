@@ -29,13 +29,22 @@ func main() {
 		os.Exit(1)
 	}
 
-	var tokens []compiler.Token
+	var html string
+	var list compiler.List
+	var previousToken compiler.Token
 
-	for _, line := range strings.Split(string(content), "\n") {
-		tokens = append(tokens, compiler.Tokinizer(line))
+	for i, line := range strings.Split(string(content), "\n") {
+		token := compiler.Tokenizer(line, &list, i)
+
+		html += compiler.Generate(token, previousToken, &list, i)
+		html += "\n"
+
+		if token.Kind == 2 && token.SubKind == list.Subkind {
+			list.Closure += 1
+		}
+
+		previousToken = token
 	}
 
-	for _, token := range tokens {
-		fmt.Println(token)
-	}
+	os.WriteFile(*useOutput, []byte(html), 0644)
 }

@@ -30,18 +30,45 @@ type Token struct {
 	Line    int
 }
 
-func Tokinizer(input string) Token {
+type List struct {
+	IsOpen  bool
+	Index   int
+	Subkind int
+	Closure int
+}
+
+func Tokenizer(input string, list *List, i int) Token {
+	token := Token{Kind: 0, SubKind: -1, Content: input}
+
 	if strings.HasPrefix(input, "#") {
 		level := utils.HeadingLevel(input)
 
-		return Token{Kind: 1, SubKind: level, Content: strings.TrimSpace(input[level:])}
+		token = Token{Kind: 1, SubKind: level - 1, Content: strings.TrimSpace(input[level:])}
 	} else if strings.HasPrefix(input, "-") {
-		return Token{Kind: 2, SubKind: 0, Content: strings.TrimSpace(input[1:])}
+		if !list.IsOpen {
+			list.IsOpen = true
+			list.Subkind = 0
+			list.Index = i
+		}
+
+		token = Token{Kind: 2, SubKind: 0, Content: strings.TrimSpace(input[1:])}
 	} else if regexp.MustCompile(`[0-9]+.`).MatchString(input) {
-		return Token{Kind: 2, SubKind: 1, Content: strings.TrimSpace(input[2:])}
+		if !list.IsOpen {
+			list.IsOpen = true
+			list.Subkind = 1
+			list.Index = i
+		}
+
+		token = Token{Kind: 2, SubKind: 1, Content: strings.TrimSpace(input[2:])}
 	} else if strings.HasPrefix(input, ">") {
-		return Token{Kind: 3, SubKind: -1, Content: strings.TrimSpace(input[1:])}
+		token = Token{Kind: 3, SubKind: -1, Content: strings.TrimSpace(input[1:])}
 	} else {
-		return Token{Kind: 0, SubKind: -1, Content: input}
+		token = Token{Kind: 0, SubKind: -1, Content: input}
 	}
+
+	if list.IsOpen && (token.Kind != 2 || token.SubKind != list.Subkind) {
+		list.IsOpen = false
+	}
+
+	return token
 }
