@@ -4,7 +4,6 @@ type Token struct {
 	Kind    int
 	SubKind int
 	Content string
-	Line    int
 }
 
 type OpenableTokens struct {

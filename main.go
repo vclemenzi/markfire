@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/vclemenzi/markfire/generator"
+	"github.com/vclemenzi/markfire/linter"
 	"github.com/vclemenzi/markfire/tokenizer"
 )
 
@@ -42,6 +43,11 @@ func main() {
 
 	for i, line := range strings.Split(string(content), "\n") {
 		token := tokenizer.Tokenizer(line, &openableTokens, i)
+
+		// Linting
+		errors := linter.Lint(token)
+
+		linter.Print(errors, i)
 
 		html += generator.Html(token, previousToken, &openableTokens, i)
 		html += "\n"
