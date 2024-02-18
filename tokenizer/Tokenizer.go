@@ -41,7 +41,7 @@ func Tokenizer(input string, openableTokens *OpenableTokens, i int) Token {
 		level := utils.HeadingLevel(input)
 
 		token = Token{Kind: 1, SubKind: level - 1, Content: strings.TrimSpace(input[level:])}
-	} else if regexp.MustCompile(`^(\?!.*-\[.*\]$)(\?!.*---$)(.*-[^-].*|.*[^-]-.*)$`).MatchString(input) { // This regex is so long because it needs to check if it is not a checkbox
+	} else if regexp.MustCompile(`^(\?!.*-\[.*\]$)(\?!.*---$)(.*-[^-].*|.*[^-]-.*)$`).MatchString(input) || strings.HasPrefix(input, "*") { // This regex is so long because it needs to check if it is not a checkbox
 		if !list.IsOpen {
 			list.IsOpen = true
 			list.Subkind = 0
