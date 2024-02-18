@@ -2,6 +2,7 @@ package generator
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/vclemenzi/markfire/tokenizer"
 	"github.com/vclemenzi/markfire/utils"
@@ -32,6 +33,11 @@ func Html(token tokenizer.Token, previousToken tokenizer.Token, openableTokens *
 		str += "<br>"
 	} else if token.Kind == 4 {
 		return ""
+	} else if token.Kind == 5 {
+		alt := token.Content[:strings.Index(token.Content, ":")]
+		url := token.Content[strings.Index(token.Content, ":")+1:]
+
+		str = fmt.Sprintf("<img src=\"%s\" alt=\"%s\">", url, alt)
 	} else {
 		str = utils.TextFormat(token.Content) + "<br>"
 	}

@@ -25,6 +25,7 @@ import (
 // Configuration: 4
 //   title: 0
 //   unknown: -1
+// Image: 5
 
 func Tokenizer(input string, openableTokens *OpenableTokens, i int) Token {
 	token := Token{Kind: 0, SubKind: -1, Content: input}
@@ -44,7 +45,7 @@ func Tokenizer(input string, openableTokens *OpenableTokens, i int) Token {
 		}
 
 		token = Token{Kind: 2, SubKind: 0, Content: strings.TrimSpace(input[1:])}
-	} else if regexp.MustCompile(`[0-9]+.`).MatchString(input) {
+	} else if regexp.MustCompile(`^[0-9]+\.`).MatchString(input) {
 		if !list.IsOpen {
 			list.IsOpen = true
 			list.Subkind = 1
@@ -68,6 +69,11 @@ func Tokenizer(input string, openableTokens *OpenableTokens, i int) Token {
 		token = Token{Kind: 4, SubKind: -1, Content: strings.TrimSpace(input[3:])}
 	} else if openableTokens.Configuration.IsOpen && strings.HasPrefix(input, "title:") {
 		token = Token{Kind: 4, SubKind: 0, Content: strings.TrimSpace(input[6:])}
+	} else if regexp.MustCompile(`!\[.*\]\(.*\)`).MatchString(input) {
+		// alt:token
+		alt := regexp.MustCompile(`!\[(.*)\]`).FindStringSubmatch(input)[1]
+		url := regexp.MustCompile(`\((.*)\)`).FindStringSubmatch(input)[1]
+		token = Token{Kind: 5, SubKind: -1, Content: alt + ":" + url}
 	} else {
 		token = Token{Kind: 0, SubKind: -1, Content: input}
 	}

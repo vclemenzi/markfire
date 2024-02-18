@@ -34,6 +34,14 @@ em {
   font-style: italic;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 20px auto;
+  border-radius: 5px;
+}
+
 blockquote {
   margin: 0;
   padding-left: 20px;

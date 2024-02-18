@@ -9,6 +9,8 @@ title: Hello World
 ##### Hello World
 ###### Hello World
 
+![test](https://github.com/vclemenzi/rice/blob/nord/i3/bg.jpg?raw=true)
+
 **hello** *world* `by` Me!
 Hello World
 - H
