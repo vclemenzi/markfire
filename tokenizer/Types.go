@@ -11,6 +11,7 @@ type OpenableTokens struct {
 	Configuration *Configuration
 	List          *List
 	Blockquote    *Blockquote
+	Codeblock     *Codeblock
 }
 
 type List struct {
@@ -26,5 +27,8 @@ type Blockquote struct {
 
 type Configuration struct {
 	IsOpen bool
-	Index  int
+}
+
+type Codeblock struct {
+	IsOpen bool
 }

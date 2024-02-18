@@ -57,6 +57,10 @@ pre {
   margin: 20px 0;
 }
 
+pre code {
+  background-color: transparent;
+}
+
 code {
   font-family: Consolas, monospace;
   background-color: #f8f9fa;

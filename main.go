@@ -37,6 +37,7 @@ func main() {
 		Configuration: &tokenizer.Configuration{},
 		List:          &tokenizer.List{},
 		Blockquote:    &tokenizer.Blockquote{},
+		Codeblock:     &tokenizer.Codeblock{},
 	}
 
 	for i, line := range strings.Split(string(content), "\n") {

@@ -26,6 +26,7 @@ import (
 //   title: 0
 //   unknown: -1
 // Image: 5
+// Codeblock: 6
 
 func Tokenizer(input string, openableTokens *OpenableTokens, i int) Token {
 	token := Token{Kind: 0, SubKind: -1, Content: input}
@@ -61,11 +62,8 @@ func Tokenizer(input string, openableTokens *OpenableTokens, i int) Token {
 
 		token = Token{Kind: 3, SubKind: -1, Content: strings.TrimSpace(input[1:])}
 	} else if strings.HasPrefix(input, "---") {
-		if !openableTokens.Configuration.IsOpen && i == 0 {
-			openableTokens.Configuration.IsOpen = true
-		} else {
-			openableTokens.Configuration.IsOpen = false
-		}
+		openableTokens.Configuration.IsOpen = !openableTokens.Configuration.IsOpen
+
 		token = Token{Kind: 4, SubKind: -1, Content: strings.TrimSpace(input[3:])}
 	} else if openableTokens.Configuration.IsOpen && strings.HasPrefix(input, "title:") {
 		token = Token{Kind: 4, SubKind: 0, Content: strings.TrimSpace(input[6:])}
@@ -73,7 +71,14 @@ func Tokenizer(input string, openableTokens *OpenableTokens, i int) Token {
 		// alt:token
 		alt := regexp.MustCompile(`!\[(.*)\]`).FindStringSubmatch(input)[1]
 		url := regexp.MustCompile(`\((.*)\)`).FindStringSubmatch(input)[1]
+
 		token = Token{Kind: 5, SubKind: -1, Content: alt + ":" + url}
+	} else if strings.HasPrefix(input, "```") {
+		openableTokens.Codeblock.IsOpen = !openableTokens.Codeblock.IsOpen
+
+		token = Token{Kind: 6, SubKind: -1, Content: ""}
+	} else if openableTokens.Codeblock.IsOpen {
+		token = Token{Kind: 6, SubKind: 0, Content: input}
 	} else {
 		token = Token{Kind: 0, SubKind: -1, Content: input}
 	}

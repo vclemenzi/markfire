@@ -11,6 +11,9 @@ title: Hello World
 
 ![test](https://github.com/vclemenzi/rice/blob/nord/i3/bg.jpg?raw=true)
 
+BLING BLING [ding](https://github.com/vclemenzi/rice)
+[or](https://github.com/vclemenzi/rice)
+
 **hello** *world* `by` Me!
 Hello World
 - H
@@ -38,3 +41,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tempus quam a sap
 > World
 Or
 > Hello World
+
+```javascript
+const hello = "world";
+
+console.log(`Hello ${world}`);
+```

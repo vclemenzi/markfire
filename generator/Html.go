@@ -38,8 +38,14 @@ func Html(token tokenizer.Token, previousToken tokenizer.Token, openableTokens *
 		url := token.Content[strings.Index(token.Content, ":")+1:]
 
 		str = fmt.Sprintf("<img src=\"%s\" alt=\"%s\">", url, alt)
+	} else if token.Kind == 6 {
+		if openableTokens.Codeblock.IsOpen && previousToken.Kind == 6 && previousToken.SubKind == -1 {
+			str = "<pre><code>" + token.Content
+		} else {
+			str = token.Content
+		}
 	} else {
-		str = utils.TextFormat(token.Content) + "<br>"
+		str = utils.TextFormat(token.Content)
 	}
 
 	if !list.IsOpen && previousToken.Kind == 2 {
@@ -52,6 +58,10 @@ func Html(token tokenizer.Token, previousToken tokenizer.Token, openableTokens *
 
 	if !blockquote.IsOpen && previousToken.Kind == 3 {
 		return "</blockquote>" + str
+	}
+
+	if !openableTokens.Codeblock.IsOpen && previousToken.Kind == 6 {
+		return "</code></pre>" + str
 	}
 
 	return str
