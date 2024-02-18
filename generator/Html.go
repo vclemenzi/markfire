@@ -57,7 +57,7 @@ func Html(token tokenizer.Token, previousToken tokenizer.Token, openableTokens *
 			}
 		}
 	} else {
-		str = utils.TextFormat(token.Content)
+		str = utils.TextFormat(token.Content) + "<br>"
 	}
 
 	if !openableTokens.List.IsOpen && previousToken.Kind == 2 {
