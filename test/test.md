@@ -14,8 +14,12 @@ title: Hello World
 BLING BLING [ding](https://github.com/vclemenzi/rice)
 [or](https://github.com/vclemenzi/rice)
 
+==MARK== mark
+~~snake~~ snake
+
 **hello** *world* `by` Me!
-Hello World
+Hello World :rocket:
+
 - H
 - E
 - L
