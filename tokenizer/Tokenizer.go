@@ -27,6 +27,9 @@ import (
 //   unknown: -1
 // Image: 5
 // Codeblock: 6
+// Tasklist: 7
+//   Unchecked: 0
+//   Checked: 1
 
 func Tokenizer(input string, openableTokens *OpenableTokens, i int) Token {
 	token := Token{Kind: 0, SubKind: -1, Content: input}
@@ -38,7 +41,7 @@ func Tokenizer(input string, openableTokens *OpenableTokens, i int) Token {
 		level := utils.HeadingLevel(input)
 
 		token = Token{Kind: 1, SubKind: level - 1, Content: strings.TrimSpace(input[level:])}
-	} else if regexp.MustCompile(`^(.*-[^-].*|.*[^-]-.*)$`).MatchString(input) {
+	} else if regexp.MustCompile(`^(\?!.*-\[.*\]$)(\?!.*---$)(.*-[^-].*|.*[^-]-.*)$`).MatchString(input) { // This regex is so long because it needs to check if it is not a checkbox
 		if !list.IsOpen {
 			list.IsOpen = true
 			list.Subkind = 0
@@ -79,6 +82,20 @@ func Tokenizer(input string, openableTokens *OpenableTokens, i int) Token {
 		token = Token{Kind: 6, SubKind: -1, Content: ""}
 	} else if openableTokens.Codeblock.IsOpen {
 		token = Token{Kind: 6, SubKind: 0, Content: input}
+	} else if regexp.MustCompile(`^- \[x\]`).MatchString(input) {
+		if !openableTokens.Tasklist.IsOpen {
+			openableTokens.Tasklist.IsOpen = true
+			openableTokens.Tasklist.Index = i
+		}
+
+		token = Token{Kind: 7, SubKind: 1, Content: strings.TrimSpace(input[5:])}
+	} else if regexp.MustCompile(`^- \[ \]`).MatchString(input) {
+		if !openableTokens.Tasklist.IsOpen {
+			openableTokens.Tasklist.IsOpen = true
+			openableTokens.Tasklist.Index = i
+		}
+
+		token = Token{Kind: 7, SubKind: 0, Content: strings.TrimSpace(input[5:])}
 	} else {
 		token = Token{Kind: 0, SubKind: -1, Content: input}
 	}
@@ -89,6 +106,10 @@ func Tokenizer(input string, openableTokens *OpenableTokens, i int) Token {
 
 	if blockquote.IsOpen && token.Kind != 3 {
 		blockquote.IsOpen = false
+	}
+
+	if openableTokens.Tasklist.IsOpen && token.Kind != 7 {
+		openableTokens.Tasklist.IsOpen = false
 	}
 
 	return token
