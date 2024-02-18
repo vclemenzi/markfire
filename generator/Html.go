@@ -30,8 +30,10 @@ func Html(token tokenizer.Token, previousToken tokenizer.Token, openableTokens *
 		}
 
 		str += "<br>"
+	} else if token.Kind == 4 {
+		return ""
 	} else {
-		str = utils.TextFormat(token.Content)
+		str = utils.TextFormat(token.Content) + "<br>"
 	}
 
 	if !list.IsOpen && previousToken.Kind == 2 {
@@ -47,4 +49,27 @@ func Html(token tokenizer.Token, previousToken tokenizer.Token, openableTokens *
 	}
 
 	return str
+}
+
+func GetHtmlStrcture(tokens []tokenizer.Token, body string, style string) string {
+	title := ""
+
+	for _, token := range tokens {
+		if token.Kind == 4 && token.SubKind == 0 {
+			title = token.Content
+		}
+	}
+
+	return fmt.Sprintf(`<!DOCTYPE html>
+  <html>
+    <head>
+      <title>%s</title>
+      <style>
+        %s
+      </style>
+    </head>
+    <body>
+      %s
+    </body>
+  </html>`, title, style, body)
 }

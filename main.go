@@ -31,10 +31,12 @@ func main() {
 	}
 
 	var html string
+	var tokens []tokenizer.Token
 	var previousToken tokenizer.Token
 	openableTokens := tokenizer.OpenableTokens{
-		List:       &tokenizer.List{},
-		Blockquote: &tokenizer.Blockquote{},
+		Configuration: &tokenizer.Configuration{},
+		List:          &tokenizer.List{},
+		Blockquote:    &tokenizer.Blockquote{},
 	}
 
 	for i, line := range strings.Split(string(content), "\n") {
@@ -43,12 +45,9 @@ func main() {
 		html += generator.Html(token, previousToken, &openableTokens, i)
 		html += "\n"
 
-		if token.Kind == 2 && token.SubKind == openableTokens.List.Subkind {
-			openableTokens.List.Closure += 1
-		}
-
+		tokens = append(tokens, token)
 		previousToken = token
 	}
 
-	os.WriteFile(*useOutput, []byte(html), 0644)
+	os.WriteFile(*useOutput, []byte(generator.GetHtmlStrcture(tokens, html, generator.GetHtmlStyle())), 0644)
 }

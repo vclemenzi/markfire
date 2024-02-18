@@ -8,19 +8,23 @@ type Token struct {
 }
 
 type OpenableTokens struct {
-	List       *List
-	Blockquote *Blockquote
+	Configuration *Configuration
+	List          *List
+	Blockquote    *Blockquote
 }
 
 type List struct {
 	IsOpen  bool
 	Index   int
 	Subkind int
-	Closure int
 }
 
 type Blockquote struct {
-	IsOpen  bool
-	Index   int
-	Closure int
+	IsOpen bool
+	Index  int
+}
+
+type Configuration struct {
+	IsOpen bool
+	Index  int
 }
