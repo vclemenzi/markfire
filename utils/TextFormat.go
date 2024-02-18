@@ -13,5 +13,5 @@ func TextFormat(input string) string {
 	input = code.ReplaceAllString(input, "<code>$1</code>")
 	input = url.ReplaceAllString(input, "<a href='$2'>$1</a>")
 
-	return input
+	return input + "<br>"
 }
